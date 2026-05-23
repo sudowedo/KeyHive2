@@ -242,6 +242,12 @@ tr:hover td{background:var(--bg3)}
   .card{padding:14px 12px;margin-bottom:12px}
   .card-header{align-items:flex-start}
   .stats{grid-template-columns:1fr}
+  .mobile-quick-stats{grid-template-columns:1fr 1fr;gap:10px}
+  .mobile-quick-stats .stat{padding:12px}
+  .mobile-quick-stats .stat-val{font-size:22px}
+  .mobile-quick-stats .stat-label{font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+  .mobile-stack-grid{grid-template-columns:1fr !important}
+  .graph-frame{height:140px !important;overflow-x:auto;padding-bottom:6px}
   th,td{padding:10px 8px}
   .table-wrap table{min-width:640px}
   .btn{padding:7px 10px}
