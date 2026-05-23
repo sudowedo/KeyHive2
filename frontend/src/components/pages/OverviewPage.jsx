@@ -10,13 +10,17 @@ export default function OverviewPage({ ctx, navigate }) {
   }, {});
   const topUser = Object.entries(todayBySubkey).sort((a, b) => b[1] - a[1])[0];
   const recentActivity = logs.slice(0, 4);
+  const prevReq = logs.slice(15, 30).length || 1;
+  const reqTrend = Math.round(((logs.slice(0, 15).length - prevReq) / prevReq) * 100);
+  const prevFail = logs.slice(15, 30).filter((l) => l.status !== 'success').length || 1;
+  const failTrend = Math.round(((logs.slice(0, 15).filter((l) => l.status !== 'success').length - prevFail) / prevFail) * 100);
 
   return <div className='page active'><div style={{ padding: '32px 36px' }}>
     <div className='page-header'><div className='page-title'>Overview</div><div className='page-sub'>Observability dashboard for proxy usage</div></div>
 
     <div className='stats mobile-quick-stats'>
-      <div className='stat'><div className='stat-val'>{fmtNum(analytics.totalRequests)}</div><div className='stat-label'>Requests</div></div>
-      <div className='stat'><div className='stat-val'>{fmtNum(failed)}</div><div className='stat-label'>Failed</div></div>
+      <div className='stat'><div className='stat-val'>{fmtNum(analytics.totalRequests)}</div><div className='stat-label'>Requests</div><div className='stat-trend'>{reqTrend >= 0 ? `↑${Math.abs(reqTrend)}%` : `↓${Math.abs(reqTrend)}%`}</div></div>
+      <div className='stat'><div className='stat-val'>{fmtNum(failed)}</div><div className='stat-label'>Failed</div><div className='stat-trend'>{failTrend >= 0 ? `↑${Math.abs(failTrend)}%` : `↓${Math.abs(failTrend)}%`}</div></div>
       <div className='stat'><div className='stat-val'>${costUsed.toFixed(2)}</div><div className='stat-label'>Cost</div></div>
       <div className='stat'><div className='stat-val'>{analytics.avgLatency || '—'}</div><div className='stat-label'>Latency</div></div>
     </div>
@@ -28,7 +32,7 @@ export default function OverviewPage({ ctx, navigate }) {
       </div>
     </div>
 
-    <div className='card graph-card'><div className='card-header'><div><div className='card-title'>Usage graph</div><div className='card-sub'>Proxy requests trend</div></div></div>
+    <div className='card graph-card'><div className='card-header'><div><div className='card-title'>Usage graph</div><div className='card-sub'>Proxy requests trend</div></div><div className='timeframe'><button className='btn btn-ghost btn-sm'>24H</button><button className='btn btn-ghost btn-sm'>7D</button><button className='btn btn-ghost btn-sm'>30D</button></div></div>
       <div className='graph-frame' style={{ display: 'flex', alignItems: 'end', gap: '4px', height: '70px' }}>{logs.slice(0, 30).reverse().map((l, i) => <div key={i} title={`${l.subkey_name || '—'} | ${l.model || '—'} | ${fmtNum(l.tokens_used)} tokens | ${l.status}`} style={{ width: '8px', height: `${Math.max(8, Math.min(64, (l.tokens_used || 1) / 20))}px`, background: 'var(--accent)', opacity: .8, borderRadius: '2px' }} />)}</div>
     </div>
 
